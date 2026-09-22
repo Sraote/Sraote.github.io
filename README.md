@@ -1,10 +1,10 @@
-# 📟 Pip-Boy 3000 Portfolio // Sanjiv Raote
+# Pip-Boy 3000 Portfolio // Sanjiv Raote
 
 An authentic **Fallout Pip-Boy 3000** interactive web portfolio built with pure HTML5, CSS3, and JavaScript. Featuring a RobCo Industries BIOS boot terminal, CRT scanlines & phosphor glow, browser-synthesized audio effects (Web Audio API), and responsive navigation tabs.
 
 ---
 
-## 🚀 How to Deploy to GitHub Pages (100% Free & 24/7)
+## How to Deploy to GitHub Pages (100% Free & 24/7)
 
 ### Method 1: Via GitHub Web Interface (No command line required!)
 1. Go to [GitHub.com](https://github.com) and create a new public repository named **`sanjivraote023.github.io`** (replace with your GitHub username).
@@ -33,7 +33,7 @@ git push -u origin main
 
 ---
 
-## ⚡ Features Included
+## Features Included
 
 - **RobCo BIOS Boot Sequence**: Line-by-line terminal boot-up sequence with typewriter sounds and a click/spacebar skip option.
 - **Synthesized Audio (Web Audio API)**: Real retro mechanical clicks and terminal beeps without any external `.mp3` files (zero loading latency, 100% reliable). Includes an on-screen mute/unmute toggle.
