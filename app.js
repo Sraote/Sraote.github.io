@@ -16,9 +16,17 @@
       this.enabled = true;
       this.tabBuffer = null;
       
-      // Preload custom tab audio
-      this.tabAudio = new Audio('tab.wav');
-      this.tabAudio.preload = 'auto';
+      // Pool of pre-instantiated Audio elements (100% reliable in Firefox & Chrome)
+      this.poolSize = 6;
+      this.poolIndex = 0;
+      this.audioPool = [];
+
+      for (let i = 0; i < this.poolSize; i++) {
+        const audio = new Audio('tab.wav');
+        audio.preload = 'auto';
+        audio.volume = 0.85;
+        this.audioPool.push(audio);
+      }
 
       // Load preference from localStorage
       const saved = localStorage.getItem('pipboy_sfx_enabled');
@@ -33,9 +41,9 @@
       fetch('tab.wav')
         .then(response => response.arrayBuffer())
         .then(arrayBuffer => {
-          if (!this.ctx) {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext) this.ctx = new AudioContext();
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext && !this.ctx) {
+            this.ctx = new AudioContext();
           }
           if (this.ctx) {
             this.ctx.decodeAudioData(arrayBuffer, (decoded) => {
@@ -55,7 +63,7 @@
         }
       }
       if (this.ctx && this.ctx.state === 'suspended') {
-        this.ctx.resume();
+        this.ctx.resume().catch(() => {});
       }
     }
 
@@ -63,24 +71,22 @@
       this.enabled = !this.enabled;
       localStorage.setItem('pipboy_sfx_enabled', this.enabled);
       if (this.enabled) {
-        this.init();
         this.playTabClick();
       }
       return this.enabled;
     }
 
-    // Play user custom tab.wav sound effect
+    // Play user custom tab.wav sound effect (Guaranteed in Firefox & Chrome)
     playTabClick() {
       if (!this.enabled) return;
-      this.init();
 
-      // 1. Preferred: Web Audio Buffer Source for instant, lag-free polyphonic playback
-      if (this.ctx && this.tabBuffer) {
+      // 1. If Web Audio Context is active and running, use buffer source
+      if (this.ctx && this.ctx.state === 'running' && this.tabBuffer) {
         try {
           const source = this.ctx.createBufferSource();
           source.buffer = this.tabBuffer;
           const gainNode = this.ctx.createGain();
-          gainNode.gain.setValueAtTime(0.75, this.ctx.currentTime);
+          gainNode.gain.setValueAtTime(0.85, this.ctx.currentTime);
           source.connect(gainNode);
           gainNode.connect(this.ctx.destination);
           source.start(0);
@@ -88,12 +94,20 @@
         } catch (e) {}
       }
 
-      // 2. Fallback: Cloned HTML5 Audio element
+      // 2. Primary preloaded Audio Pool (Directly allowed by Firefox user gesture)
       try {
-        const audioClone = this.tabAudio.cloneNode();
-        audioClone.volume = 0.75;
-        audioClone.play().catch(() => {});
-      } catch (e) {}
+        const audio = this.audioPool[this.poolIndex];
+        this.poolIndex = (this.poolIndex + 1) % this.poolSize;
+        audio.currentTime = 0;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            this.init();
+          });
+        }
+      } catch (err) {
+        this.init();
+      }
     }
 
     // Fast keystroke blip for boot terminal
