@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIP-BOY 3000 // SANJIV RAOTE</title>
+  <meta name="description" content="Portfolio of Sanjiv Raote - Data Science & AI @ University of Miami | Fallout Pip-Boy 3000 Edition">
+  
+  <!-- Retro Terminal Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Physical Bezel & CRT Container -->
+  <div class="pipboy-bezel">
+    
+    <!-- Outer Knobs & Screws Accent -->
+    <div class="bezel-screw top-left"></div>
+    <div class="bezel-screw top-right"></div>
+    <div class="bezel-screw bottom-left"></div>
+    <div class="bezel-screw bottom-right"></div>
+    <div class="pipboy-knob knob-top"></div>
+    <div class="pipboy-knob knob-bottom"></div>
+
+    <!-- The Curved CRT Screen -->
+    <div class="crt-screen" id="crtScreen">
+      
+      <!-- Scanline, phosphor grain & flicker overlays -->
+      <div class="scanlines"></div>
+      <div class="screen-glare"></div>
+      <div class="crt-vignette"></div>
+
+      <!-- ==================================================== -->
+      <!-- 1. ROBCO BOOT SEQUENCE OVERLAY                      -->
+      <!-- ==================================================== -->
+      <div class="boot-overlay" id="bootOverlay">
+        <div class="boot-content">
+          <div class="boot-header">
+            <pre class="ascii-logo">
+  ____   ____  ____    ____   ______   __   __
+ |  _ \ / __ \|  _ \  / __ \ / ___\ \ / /  / /
+ | |_) | |  | | |_) || |  | | |    \ V /  / / 
+ |  _ <| |  | |  _ < | |  | | |     | |  < <  
+ | |_) | |__| | |_) || |__| | |___  | |   \ \ 
+ |____/ \____/|____/  \____/ \____| |_|    \_\</pre>
+            <div class="boot-title">ROBCO INDUSTRIES (TM) TERMLINK v3.8</div>
+            <div class="boot-subtitle">INITIALIZING PIP-BOY 3000 INTERFACE MODULE...</div>
+          </div>
+          
+          <div class="boot-terminal-log" id="bootTerminalLog">
+            <!-- Terminal lines injected via JavaScript -->
+          </div>
+
+          <div class="boot-footer">
+            <span class="cursor">█</span>
+            <button class="skip-boot-btn" id="skipBootBtn">[ SKIP BOOT (CLICK / SPACE) ▶ ]</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================================================== -->
+      <!-- 2. MAIN PIP-BOY INTERFACE                            -->
+      <!-- ==================================================== -->
+      <div class="pipboy-interface" id="pipboyInterface">
+        
+        <!-- Top HUD Header -->
+        <header class="pipboy-header">
+          <div class="header-top-row">
+            <div class="brand-tag">ROBCO OS // VAULT-TEC 305</div>
+            <div class="location-tag">LOCATION: MIAMI, FL</div>
+            <div class="audio-toggle-wrapper">
+              <button class="pip-btn audio-btn" id="audioToggleBtn" title="Toggle Sound Effects">
+                <span class="audio-icon">🔊</span> SFX: <span id="audioStateText">ON</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pip-Boy Main Navigation Tabs -->
+          <nav class="pipboy-tabs" id="pipTabs" role="tablist">
+            <button class="tab-btn active" data-tab="stat" role="tab" aria-selected="true">
+              <span class="bracket">[</span> <span class="tab-label">STAT</span> <span class="bracket">]</span>
+            </button>
+            <button class="tab-btn" data-tab="exp" role="tab" aria-selected="false">
+              <span class="bracket">[</span> <span class="tab-label">EXP</span> <span class="bracket">]</span>
+            </button>
+            <button class="tab-btn" data-tab="perks" role="tab" aria-selected="false">
+              <span class="bracket">[</span> <span class="tab-label">PERKS</span> <span class="bracket">]</span>
+            </button>
+            <button class="tab-btn" data-tab="data" role="tab" aria-selected="false">
+              <span class="bracket">[</span> <span class="tab-label">DATA</span> <span class="bracket">]</span>
+            </button>
+            <button class="tab-btn" data-tab="radio" role="tab" aria-selected="false">
+              <span class="bracket">[</span> <span class="tab-label">RADIO</span> <span class="bracket">]</span>
+            </button>
+          </nav>
+          
+          <div class="tab-divider-line"></div>
+        </header>
+
+        <!-- Main Content Viewport -->
+        <main class="pipboy-content" id="pipContent">
+
+          <!-- ================= TAB 1: STAT (BIO & SPECIAL) ================= -->
+          <section class="tab-panel active" id="tab-stat" role="tabpanel">
+            <div class="panel-columns">
+              
+              <!-- Left Column: Character Sheet -->
+              <div class="column-left">
+                <div class="character-card">
+                  <div class="avatar-box">
+                    <!-- Vault Boy Animated Graphic -->
+                    <div class="vault-boy-art">
+                      <pre class="ascii-vaultboy">
+       .---.
+      /     \
+     | () () |
+     |   _   |
+      \ === /
+     .-'---'-.
+    /  |   |  \
+   |   |___|   |
+   |           |
+    \         /
+     '--'|'--'
+        / \
+       /   \</pre>
+                      <div class="condition-badge">CND 100%</div>
+                    </div>
+                  </div>
+
+                  <div class="character-details">
+                    <h1 class="character-name">SANJIV RAOTE</h1>
+                    <div class="character-class">CLASS: DATA SCIENTIST & AI ARCHITECT</div>
+                    <div class="character-quote">
+                      "Transforming Challenges into Achievements"
+                    </div>
+                    
+                    <div class="stat-bars-group">
+                      <div class="stat-bar-item">
+                        <span class="bar-label">HP</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 100%;"></div></div>
+                        <span class="bar-val">100/100</span>
+                      </div>
+                      <div class="stat-bar-item">
+                        <span class="bar-label">AP</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 85%;"></div></div>
+                        <span class="bar-val">85/85</span>
+                      </div>
+                      <div class="stat-bar-item">
+                        <span class="bar-label">XP</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 78%;"></div></div>
+                        <span class="bar-val">CLASS OF '27</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="quick-summary-box">
+                  <div class="box-title">/// OPERATIVE DOSSIER</div>
+                  <p>
+                    Data Science and Artificial Intelligence undergraduate at the <strong>University of Miami</strong> with double minors in <strong>Computer Science</strong> and <strong>Psychology</strong>. Experienced in frontier AI training, cloud computing (AWS), and human-centered technology solutions.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Right Column: S.P.E.C.I.A.L. & Attributes -->
+              <div class="column-right">
+                <div class="section-title-bar">S.P.E.C.I.A.L. ATTRIBUTES</div>
+                
+                <div class="special-grid">
+                  <div class="special-card">
+                    <span class="special-letter">S</span>
+                    <div class="special-info">
+                      <div class="special-name">STRENGTH</div>
+                      <div class="special-desc">Work Ethic & Resilience (Bar Back & Crew Exp)</div>
+                    </div>
+                    <span class="special-score">08</span>
+                  </div>
+
+                  <div class="special-card">
+                    <span class="special-letter">P</span>
+                    <div class="special-info">
+                      <div class="special-name">PERCEPTION</div>
+                      <div class="special-desc">Behavioral Analytics & Psychology Minor</div>
+                    </div>
+                    <span class="special-score">09</span>
+                  </div>
+
+                  <div class="special-card">
+                    <span class="special-letter">E</span>
+                    <div class="special-info">
+                      <div class="special-name">ENDURANCE</div>
+                      <div class="special-desc">Fast-paced, high-pressure execution</div>
+                    </div>
+                    <span class="special-score">08</span>
+                  </div>
+
+                  <div class="special-card">
+                    <span class="special-letter">C</span>
+                    <div class="special-info">
+                      <div class="special-name">CHARISMA</div>
+                      <div class="special-desc">Customer Service, Team Collaboration & Comms</div>
+                    </div>
+                    <span class="special-score">09</span>
+                  </div>
+
+                  <div class="special-card highlight-special">
+                    <span class="special-letter">I</span>
+                    <div class="special-info">
+                      <div class="special-name">INTELLIGENCE</div>
+                      <div class="special-desc">Data Science, Machine Learning & AI Training</div>
+                    </div>
+                    <span class="special-score">10</span>
+                  </div>
+
+                  <div class="special-card highlight-special">
+                    <span class="special-letter">A</span>
+                    <div class="special-info">
+                      <div class="special-name">AGILITY</div>
+                      <div class="special-desc">Cloud Infrastructure (AWS) & Modern Dev</div>
+                    </div>
+                    <span class="special-score">09</span>
+                  </div>
+
+                  <div class="special-card">
+                    <span class="special-letter">L</span>
+                    <div class="special-info">
+                      <div class="special-name">LUCK</div>
+                      <div class="special-desc">Turning complex challenges into tangible wins</div>
+                    </div>
+                    <span class="special-score">09</span>
+                  </div>
+                </div>
+
+                <div class="action-footer-buttons">
+                  <a href="#tab-radio" class="pip-btn primary-btn switch-tab-link" data-target="radio">
+                    [ TRANSMIT MESSAGE / CONTACT ▶ ]
+                  </a>
+                  <a href="https://www.linkedin.com/in/sanjivraote023" target="_blank" rel="noopener noreferrer" class="pip-btn">
+                    [ ACCESS LINKEDIN ↗ ]
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ================= TAB 2: EXP (QUEST LOG / CAREER) ================= -->
+          <section class="tab-panel" id="tab-exp" role="tabpanel">
+            <div class="panel-header-row">
+              <div class="section-title-bar">QUEST LOG // CAREER OPERATIONS</div>
+              <div class="quest-count">4 MISSIONS RECORDED</div>
+            </div>
+
+            <div class="quest-list">
+              
+              <!-- Quest 1: Handshake -->
+              <article class="quest-item active-quest">
+                <div class="quest-marker">▶ ACTIVE</div>
+                <div class="quest-body">
+                  <div class="quest-main-header">
+                    <h2 class="quest-title">OPERATION: AI TRAINER</h2>
+                    <span class="quest-company">HANDSHAKE</span>
+                  </div>
+                  <div class="quest-meta">
+                    <span class="meta-tag">📅 June 2026 – Present</span>
+                    <span class="meta-tag">📍 Remote / United States</span>
+                    <span class="meta-tag status-active">STATUS: IN PROGRESS</span>
+                  </div>
+                  <div class="quest-desc">
+                    <p>
+                      Evaluating, fine-tuning, and reinforcing cutting-edge generative artificial intelligence models. Crafting high-quality prompt-response pairs, evaluating multimodal outputs, and optimizing model alignment for factual accuracy and safety.
+                    </p>
+                  </div>
+                  <div class="quest-rewards">
+                    <span class="reward-label">REWARDS & XP:</span>
+                    <span class="badge">Generative AI</span>
+                    <span class="badge">Model Evaluation</span>
+                    <span class="badge">RLHF / Alignment</span>
+                    <span class="badge">+850 XP</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Quest 2: Rearc -->
+              <article class="quest-item completed-quest">
+                <div class="quest-marker">✓ DONE</div>
+                <div class="quest-body">
+                  <div class="quest-main-header">
+                    <h2 class="quest-title">OPERATION: CLOUD & DATA INTERNSHIP</h2>
+                    <span class="quest-company">REARC</span>
+                  </div>
+                  <div class="quest-meta">
+                    <span class="meta-tag">📅 June 2025 – August 2025 (3 mos)</span>
+                    <span class="meta-tag">📍 United States</span>
+                    <span class="meta-tag status-done">STATUS: MISSION ACCOMPLISHED</span>
+                  </div>
+                  <div class="quest-desc">
+                    <p>
+                      Immersed in cloud infrastructure and modern data solutions. Worked alongside cloud architects utilizing Amazon Web Services (AWS) and automated deployment patterns for high-scale enterprise cloud environments.
+                    </p>
+                  </div>
+                  <div class="quest-rewards">
+                    <span class="reward-label">REWARDS & XP:</span>
+                    <span class="badge">Amazon Web Services (AWS)</span>
+                    <span class="badge">Cloud Computing</span>
+                    <span class="badge">Data Pipelines</span>
+                    <span class="badge">+650 XP</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Quest 3: Flynn's Pub House -->
+              <article class="quest-item completed-quest">
+                <div class="quest-marker">✓ DONE</div>
+                <div class="quest-body">
+                  <div class="quest-main-header">
+                    <h2 class="quest-title">OPERATION: LOGISTICS & SERVICE SPECIALIST (BAR BACK)</h2>
+                    <span class="quest-company">FLYNN'S PUB HOUSE</span>
+                  </div>
+                  <div class="quest-meta">
+                    <span class="meta-tag">📅 June 2025 – August 2025 (3 mos)</span>
+                    <span class="meta-tag">📍 Rahway, New Jersey, United States</span>
+                    <span class="meta-tag status-done">STATUS: MISSION ACCOMPLISHED</span>
+                  </div>
+                  <div class="quest-desc">
+                    <p>
+                      Managed inventory turnover, high-volume frontline replenishment, and rapid situational problem-solving under peak demand hours in a bustling hospitality environment.
+                    </p>
+                  </div>
+                  <div class="quest-rewards">
+                    <span class="reward-label">REWARDS & XP:</span>
+                    <span class="badge">High-Pressure Execution</span>
+                    <span class="badge">Inventory Logistics</span>
+                    <span class="badge">Team Coordination</span>
+                    <span class="badge">+300 XP</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Quest 4: Dunkin' -->
+              <article class="quest-item completed-quest">
+                <div class="quest-marker">✓ DONE</div>
+                <div class="quest-body">
+                  <div class="quest-main-header">
+                    <h2 class="quest-title">OPERATION: FRONT-LINE OPERATIONS CREW</h2>
+                    <span class="quest-company">DUNKIN'</span>
+                  </div>
+                  <div class="quest-meta">
+                    <span class="meta-tag">📅 December 2021 – December 2023 (2 yrs 1 mo)</span>
+                    <span class="meta-tag">📍 Rahway, New Jersey, United States</span>
+                    <span class="meta-tag status-done">STATUS: MISSION ACCOMPLISHED</span>
+                  </div>
+                  <div class="quest-desc">
+                    <p>
+                      Served hundreds of customers daily while maintaining precision speed of service, accurate order fulfillment, customer satisfaction, and team communication over a 2-year tenure.
+                    </p>
+                  </div>
+                  <div class="quest-rewards">
+                    <span class="reward-label">REWARDS & XP:</span>
+                    <span class="badge">Customer Service</span>
+                    <span class="badge">Speed of Service</span>
+                    <span class="badge">Dependability</span>
+                    <span class="badge">+500 XP</span>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </section>
+
+          <!-- ================= TAB 3: PERKS (SKILLS & TECH) ================= -->
+          <section class="tab-panel" id="tab-perks" role="tabpanel">
+            <div class="section-title-bar">EQUIPPED PERKS // SKILL MATRIX</div>
+
+            <div class="perks-grid">
+              
+              <!-- Perk: AWS & Cloud -->
+              <div class="perk-card">
+                <div class="perk-icon">☁️</div>
+                <div class="perk-content">
+                  <div class="perk-header">
+                    <h3 class="perk-name">CLOUD COMMANDER</h3>
+                    <div class="perk-stars">★★★★★</div>
+                  </div>
+                  <div class="perk-sub">Amazon Web Services (AWS) & Cloud Infrastructure</div>
+                  <p class="perk-text">
+                    Hands-on experience gained at Rearc in AWS services, cloud compute, storage architectures, and scalable distributed workflows.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Perk: AI & Data Science -->
+              <div class="perk-card">
+                <div class="perk-icon">🤖</div>
+                <div class="perk-content">
+                  <div class="perk-header">
+                    <h3 class="perk-name">NEURAL OPERATOR</h3>
+                    <div class="perk-stars">★★★★★</div>
+                  </div>
+                  <div class="perk-sub">Artificial Intelligence & Model Training</div>
+                  <p class="perk-text">
+                    Major in Data Science and AI at University of Miami + active AI Trainer at Handshake. Specializing in model validation, tuning, and prompt architecture.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Perk: Python & Analytics -->
+              <div class="perk-card">
+                <div class="perk-icon">🐍</div>
+                <div class="perk-content">
+                  <div class="perk-header">
+                    <h3 class="perk-name">DATA HARVESTER</h3>
+                    <div class="perk-stars">★★★★☆</div>
+                  </div>
+                  <div class="perk-sub">Data Science, Algorithms & Computer Science</div>
+                  <p class="perk-text">
+                    Statistical analysis, algorithmic foundations, computer science principles, data wrangling, and predictive modeling.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Perk: Psychology & Human Factors -->
+              <div class="perk-card">
+                <div class="perk-icon">🧠</div>
+                <div class="perk-content">
+                  <div class="perk-header">
+                    <h3 class="perk-name">COGNITIVE COMPREHENSION</h3>
+                    <div class="perk-stars">★★★★☆</div>
+                  </div>
+                  <div class="perk-sub">Psychology Minor & Human-Centered AI</div>
+                  <p class="perk-text">
+                    Unique interdisciplinary advantage bridging human cognitive behavior with artificial intelligence and intuitive interface dynamics.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Perk: Customer Service & Comms -->
+              <div class="perk-card">
+                <div class="perk-icon">🤝</div>
+                <div class="perk-content">
+                  <div class="perk-header">
+                    <h3 class="perk-name">MASTER NEGOTIATOR</h3>
+                    <div class="perk-stars">★★★★★</div>
+                  </div>
+                  <div class="perk-sub">Customer Service, Empathy & Leadership</div>
+                  <p class="perk-text">
+                    Refined through 2+ years of high-volume customer-facing roles. Proven capacity to stay composed, resolve conflicts, and communicate clearly.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Perk: Challenge Transformer -->
+              <div class="perk-card">
+                <div class="perk-icon">⚡</div>
+                <div class="perk-content">
+                  <div class="perk-header">
+                    <h3 class="perk-name">ACHIEVEMENT CATALYST</h3>
+                    <div class="perk-stars">★★★★★</div>
+                  </div>
+                  <div class="perk-sub">Problem Solving & High Ambition</div>
+                  <p class="perk-text">
+                    Core motto: <em>"Transforming Challenges into Achievements."</em> Driving ambitious projects from concept to working reality.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ================= TAB 4: DATA (EDUCATION & VAULT LOGS) ================= -->
+          <section class="tab-panel" id="tab-data" role="tabpanel">
+            <div class="section-title-bar">VAULT ARCHIVES // ACADEMIC DOSSIER</div>
+
+            <div class="edu-container">
+              
+              <!-- University of Miami -->
+              <div class="edu-card featured-edu">
+                <div class="edu-banner">
+                  <div class="edu-crest">U MIAMI</div>
+                  <div class="edu-headline">
+                    <h2 class="edu-school">UNIVERSITY OF MIAMI</h2>
+                    <div class="edu-location">Coral Gables / Miami, Florida, United States</div>
+                  </div>
+                  <div class="edu-years">2023 – 2027</div>
+                </div>
+
+                <div class="edu-content">
+                  <div class="degree-highlight">
+                    <span class="degree-prefix">DEGREE:</span>
+                    <span class="degree-title">Bachelor of Arts (BA) in Data Science and Artificial Intelligence</span>
+                  </div>
+
+                  <div class="minors-group">
+                    <div class="minor-pill">
+                      <span class="minor-label">DOUBLE MINOR:</span>
+                      <strong>Computer Science</strong>
+                    </div>
+                    <div class="minor-pill">
+                      <span class="minor-label">DOUBLE MINOR:</span>
+                      <strong>Psychology</strong>
+                    </div>
+                  </div>
+
+                  <div class="edu-notes">
+                    <p>
+                      Curriculum combines quantitative data theory, machine learning architectures, statistical modeling, software development, and human cognitive psychology.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- The Wardlaw + Hartridge School -->
+              <div class="edu-card">
+                <div class="edu-banner">
+                  <div class="edu-crest">W+H</div>
+                  <div class="edu-headline">
+                    <h2 class="edu-school">THE WARDLAW + HARTRIDGE SCHOOL</h2>
+                    <div class="edu-location">Edison, New Jersey, United States</div>
+                  </div>
+                  <div class="edu-years">COMPLETED</div>
+                </div>
+
+                <div class="edu-content">
+                  <div class="degree-highlight">
+                    <span class="degree-prefix">CREDENTIAL:</span>
+                    <span class="degree-title">High School Diploma</span>
+                  </div>
+                  <p class="edu-subtext">
+                    Rigorous college preparatory education with a focus on academic integrity, leadership, and community contribution.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ================= TAB 5: RADIO (COMMS & CONTACT) ================= -->
+          <section class="tab-panel" id="tab-radio" role="tabpanel">
+            <div class="section-title-bar">RADIO FREQUENCIES // DIRECT TRANSMISSION</div>
+
+            <div class="radio-layout">
+              
+              <!-- Frequency List -->
+              <div class="radio-channels">
+                <div class="channel-box active-channel">
+                  <div class="signal-waves">
+                    <span class="wave"></span><span class="wave"></span><span class="wave"></span>
+                  </div>
+                  <div class="channel-info">
+                    <div class="channel-freq">FREQ: 98.6 MHz [DIRECT BEACON]</div>
+                    <h3 class="channel-title">sraote23@gmail.com</h3>
+                    <p class="channel-desc">Official direct communications channel. Fast response time.</p>
+                  </div>
+                  <a href="mailto:sraote23@gmail.com" class="pip-btn radio-action-btn">
+                    [ SEND TRANSMISSION ✉ ]
+                  </a>
+                </div>
+
+                <div class="channel-box">
+                  <div class="signal-waves">
+                    <span class="wave"></span><span class="wave"></span><span class="wave"></span>
+                  </div>
+                  <div class="channel-info">
+                    <div class="channel-freq">FREQ: 104.2 MHz [NET BROADCAST]</div>
+                    <h3 class="channel-title">linkedin.com/in/sanjivraote023</h3>
+                    <p class="channel-desc">Public professional network profile, connections & updates.</p>
+                  </div>
+                  <a href="https://www.linkedin.com/in/sanjivraote023" target="_blank" rel="noopener noreferrer" class="pip-btn radio-action-btn">
+                    [ OPEN FREQUENCY ↗ ]
+                  </a>
+                </div>
+
+                <div class="channel-box">
+                  <div class="signal-waves">
+                    <span class="wave"></span><span class="wave"></span><span class="wave"></span>
+                  </div>
+                  <div class="channel-info">
+                    <div class="channel-freq">FREQ: 108.0 MHz [HOLOTAPE ARCHIVE]</div>
+                    <h3 class="channel-title">RESUME / DOSSIER DOWNLOAD</h3>
+                    <p class="channel-desc">Download or print full physical holotape document.</p>
+                  </div>
+                  <button class="pip-btn radio-action-btn" onclick="window.print()">
+                    [ PRINT / SAVE DOSSIER ⎙ ]
+                  </button>
+                </div>
+              </div>
+
+              <!-- Radio Holotape Player / Contact Box -->
+              <div class="radio-transmission-terminal">
+                <div class="box-title">/// DIRECT HOLO-MESSAGE</div>
+                <p class="transmission-tip">
+                  Seeking opportunities in <strong>Data Science, AI Training, Cloud Engineering (AWS), and Software Development</strong>.
+                </p>
+                
+                <form class="radio-form" action="mailto:sraote23@gmail.com" method="GET" enctype="text/plain">
+                  <div class="form-group">
+                    <label for="formSubject">TRANSMISSION SUBJECT:</label>
+                    <input type="text" id="formSubject" name="subject" value="Opportunity / Collaboration for Sanjiv Raote" class="pip-input">
+                  </div>
+                  <div class="form-group">
+                    <label for="formBody">MESSAGE BODY:</label>
+                    <textarea id="formBody" name="body" rows="4" class="pip-input" placeholder="Enter message coordinates and details here..."></textarea>
+                  </div>
+                  <button type="submit" class="pip-btn primary-btn submit-beacon-btn">
+                    [ BROADCAST VIA EMAIL CLIENT ▶ ]
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </section>
+
+        </main>
+
+        <!-- Bottom Status Bar -->
+        <footer class="pipboy-footer">
+          <div class="footer-stats">
+            <span class="footer-item"><span class="f-label">HP</span> 100/100</span>
+            <span class="footer-item"><span class="f-label">LEVEL</span> 21</span>
+            <span class="footer-item"><span class="f-label">AP</span> 85/85</span>
+            <span class="footer-item"><span class="f-label">RADS</span> 0</span>
+            <span class="footer-item"><span class="f-label">CAPS</span> 2027</span>
+          </div>
+          <div class="footer-status-text">
+            <span>READY // VAULT-TEC INDUSTRIES</span>
+          </div>
+        </footer>
+
+      </div> <!-- /pipboy-interface -->
+
+    </div> <!-- /crt-screen -->
+
+  </div> <!-- /pipboy-bezel -->
+
+  <script src="app.js"></script>
+</body>
+</html>

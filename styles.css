@@ -1,0 +1,1142 @@
+/* =========================================================
+   PIP-BOY 3000 ROBCO OS STYLESHEET
+   Target: Authentic Fallout CRT Phosphor Terminal
+   Author: Designed for Sanjiv Raote
+   ========================================================= */
+
+:root {
+  --pip-green: #1bff80;
+  --pip-green-glow: rgba(27, 255, 128, 0.65);
+  --pip-green-dim: #0d8544;
+  --pip-green-dark: #07381c;
+  --pip-green-bg: #0b1c11;
+  --pip-green-border: #146132;
+  --crt-black: #040905;
+  --crt-bezel: #1e2420;
+  --crt-bezel-border: #323a34;
+  --crt-screw: #47534c;
+  --font-mono: 'Share Tech Mono', 'VT323', monospace;
+  --pip-scanline-size: 3px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #020503;
+  color: var(--pip-green);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  overflow-x: hidden;
+  text-shadow: 0 0 4px var(--pip-green-glow);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--pip-green-bg);
+  border-left: 1px solid var(--pip-green-border);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--pip-green-dim);
+  border: 1px solid var(--pip-green);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pip-green);
+}
+
+/* Selection */
+::selection {
+  background: var(--pip-green);
+  color: var(--crt-black);
+  text-shadow: none;
+}
+
+/* =========================================================
+   PHYSICAL PIP-BOY BEZEL & ENCLOSURE
+   ========================================================= */
+.pipboy-bezel {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 24px 20px;
+  background: linear-gradient(145deg, #1b221d 0%, #0e1310 100%);
+  border: 4px solid var(--crt-bezel-border);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), inset 0 2px 6px rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+/* Bezel decorative screws */
+.bezel-screw {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #5b6961 20%, #2a332d 80%);
+  border: 1px solid #1a201c;
+  border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+.bezel-screw::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  background: #141a16;
+  transform: translateY(-50%) rotate(45deg);
+}
+.bezel-screw.top-left { top: 8px; left: 10px; }
+.bezel-screw.top-right { top: 8px; right: 10px; }
+.bezel-screw.bottom-left { bottom: 8px; left: 10px; }
+.bezel-screw.bottom-right { bottom: 8px; right: 10px; }
+
+/* Pip-Boy Rotary Knobs */
+.pipboy-knob {
+  position: absolute;
+  right: -16px;
+  width: 14px;
+  height: 48px;
+  background: linear-gradient(to bottom, #38423b, #1d2420, #38423b);
+  border: 2px solid #141a16;
+  border-radius: 4px;
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.8);
+}
+.knob-top { top: 120px; }
+.knob-bottom { top: 190px; }
+
+/* =========================================================
+   CRT SCREEN EMULATION
+   ========================================================= */
+.crt-screen {
+  background-color: var(--crt-black);
+  border: 3px solid var(--pip-green-border);
+  border-radius: 12px;
+  box-shadow: inset 0 0 60px rgba(7, 56, 28, 0.5), 0 0 15px rgba(27, 255, 128, 0.15);
+  position: relative;
+  overflow: hidden;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scanlines overlay */
+.scanlines {
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.35) 50%
+  );
+  background-size: 100% var(--pip-scanline-size);
+  z-index: 90;
+  opacity: 0.85;
+}
+
+/* CRT Screen Vignette (Curved monitor edges) */
+.crt-vignette {
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.8) 100%);
+  z-index: 91;
+}
+
+/* Glass Screen Glare */
+.screen-glare {
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 35%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 65%);
+  z-index: 92;
+}
+
+/* CRT Screen Flicker */
+@keyframes crtFlicker {
+  0% { opacity: 0.99; }
+  50% { opacity: 1; }
+  52% { opacity: 0.96; }
+  54% { opacity: 1; }
+  85% { opacity: 0.98; }
+  100% { opacity: 1; }
+}
+
+.crt-screen {
+  animation: crtFlicker 0.15s infinite;
+}
+
+/* =========================================================
+   ROBCO BOOT LOADER OVERLAY
+   ========================================================= */
+.boot-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--crt-black);
+  z-index: 80;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.boot-overlay.fade-out {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.ascii-logo {
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.1;
+  color: var(--pip-green);
+  text-shadow: 0 0 6px var(--pip-green-glow);
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.boot-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.boot-subtitle {
+  font-size: 0.9rem;
+  color: var(--pip-green-dim);
+  border-bottom: 1px dashed var(--pip-green-dim);
+  padding-bottom: 8px;
+}
+
+.boot-terminal-log {
+  margin-top: 20px;
+  flex: 1;
+  overflow-y: auto;
+  font-size: 0.95rem;
+}
+
+.terminal-line {
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+}
+
+.terminal-line.success {
+  color: #55ff99;
+}
+
+.terminal-line.highlight {
+  color: #fff;
+  font-weight: bold;
+}
+
+.boot-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 15px;
+  border-top: 1px solid var(--pip-green-border);
+}
+
+.cursor {
+  animation: blink 0.8s infinite;
+  font-size: 1.2rem;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.skip-boot-btn {
+  background: transparent;
+  color: var(--pip-green);
+  border: 1px solid var(--pip-green);
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.skip-boot-btn:hover {
+  background: var(--pip-green);
+  color: var(--crt-black);
+  box-shadow: 0 0 10px var(--pip-green);
+}
+
+/* =========================================================
+   PIP-BOY MAIN HUD INTERFACE
+   ========================================================= */
+.pipboy-interface {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Header Top Row */
+.header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--pip-green-dim);
+  border-bottom: 1px solid var(--pip-green-border);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.audio-btn {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+}
+
+/* Pip-Boy Tab Bar */
+.pipboy-tabs {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--pip-green-dim);
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 6px 12px;
+  letter-spacing: 1.5px;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.tab-btn:hover {
+  color: var(--pip-green);
+  text-shadow: 0 0 8px var(--pip-green);
+}
+
+.tab-btn.active {
+  color: #fff;
+  background: var(--pip-green-dark);
+  border-top: 2px solid var(--pip-green);
+  border-bottom: 2px solid var(--pip-green);
+  text-shadow: 0 0 10px var(--pip-green);
+}
+
+.tab-btn .bracket {
+  color: var(--pip-green);
+  font-weight: bold;
+}
+
+.tab-divider-line {
+  height: 2px;
+  background: linear-gradient(90deg, var(--pip-green) 0%, var(--pip-green-border) 70%, transparent 100%);
+  margin-top: 4px;
+  box-shadow: 0 0 6px var(--pip-green-glow);
+}
+
+/* =========================================================
+   MAIN VIEWPORT & TAB PANELS
+   ========================================================= */
+.pipboy-content {
+  flex: 1;
+  padding: 20px 0 10px 0;
+}
+
+.tab-panel {
+  display: none;
+  animation: tabFadeIn 0.25s ease-out;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title-bar {
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: var(--pip-green-bg);
+  border-left: 5px solid var(--pip-green);
+  border-top: 1px solid var(--pip-green-border);
+  border-bottom: 1px solid var(--pip-green-border);
+  padding: 6px 12px;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+}
+
+/* Common Pip-Boy Buttons */
+.pip-btn {
+  display: inline-block;
+  background: var(--pip-green-bg);
+  color: var(--pip-green);
+  border: 1px solid var(--pip-green);
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.pip-btn:hover {
+  background: var(--pip-green);
+  color: var(--crt-black);
+  text-shadow: none;
+  box-shadow: 0 0 12px var(--pip-green);
+}
+
+.pip-btn.primary-btn {
+  background: var(--pip-green-dark);
+  font-weight: bold;
+  border-width: 2px;
+}
+
+/* =========================================================
+   TAB 1: STAT PANEL
+   ========================================================= */
+.panel-columns {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+}
+
+.character-card {
+  display: flex;
+  gap: 18px;
+  background: rgba(11, 28, 17, 0.4);
+  border: 1px solid var(--pip-green-border);
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.avatar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ascii-vaultboy {
+  font-family: monospace;
+  font-size: 11px;
+  line-height: 1.1;
+  color: var(--pip-green);
+  border: 1px solid var(--pip-green-border);
+  padding: 6px;
+  background: #020704;
+}
+
+.condition-badge {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  background: var(--pip-green-dark);
+  border: 1px solid var(--pip-green);
+  padding: 2px 6px;
+  font-weight: bold;
+}
+
+.character-details {
+  flex: 1;
+}
+
+.character-name {
+  font-size: 1.45rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 0 6px var(--pip-green);
+}
+
+.character-class {
+  font-size: 0.85rem;
+  color: var(--pip-green-dim);
+  margin-bottom: 6px;
+}
+
+.character-quote {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #8cffc1;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  border-left: 2px solid var(--pip-green);
+}
+
+.stat-bars-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.bar-label {
+  width: 24px;
+  font-weight: bold;
+}
+
+.progress-track {
+  flex: 1;
+  height: 10px;
+  background: #06150b;
+  border: 1px solid var(--pip-green-border);
+  padding: 1px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--pip-green);
+  box-shadow: 0 0 6px var(--pip-green);
+}
+
+.bar-val {
+  font-size: 0.8rem;
+  width: 85px;
+  text-align: right;
+  color: #fff;
+}
+
+.quick-summary-box {
+  margin-top: 18px;
+  background: rgba(11, 28, 17, 0.3);
+  border: 1px dashed var(--pip-green-border);
+  padding: 14px;
+  font-size: 0.95rem;
+}
+
+.quick-summary-box .box-title {
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+/* S.P.E.C.I.A.L. Grid */
+.special-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.special-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(11, 28, 17, 0.45);
+  border: 1px solid var(--pip-green-border);
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+}
+
+.special-card:hover {
+  background: rgba(20, 97, 50, 0.35);
+  border-color: var(--pip-green);
+  transform: translateX(4px);
+}
+
+.special-card.highlight-special {
+  border-left: 4px solid var(--pip-green);
+}
+
+.special-letter {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+  width: 22px;
+  text-align: center;
+}
+
+.special-info {
+  flex: 1;
+}
+
+.special-name {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--pip-green);
+}
+
+.special-desc {
+  font-size: 0.8rem;
+  color: #a4e9be;
+}
+
+.special-score {
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: #fff;
+  background: var(--pip-green-dark);
+  border: 1px solid var(--pip-green);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.action-footer-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* =========================================================
+   TAB 2: EXP (QUEST LOG)
+   ========================================================= */
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.panel-header-row .section-title-bar {
+  margin-bottom: 0;
+  flex: 1;
+}
+.quest-count {
+  font-size: 0.9rem;
+  color: var(--pip-green-dim);
+  padding-left: 12px;
+}
+
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quest-item {
+  display: flex;
+  gap: 14px;
+  background: rgba(11, 28, 17, 0.4);
+  border: 1px solid var(--pip-green-border);
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.quest-item:hover {
+  border-color: var(--pip-green);
+  background: rgba(20, 97, 50, 0.25);
+}
+
+.quest-item.active-quest {
+  border-left: 5px solid #55ff99;
+  background: rgba(15, 45, 25, 0.6);
+}
+
+.quest-marker {
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  background: #041007;
+  border: 1px solid var(--pip-green-border);
+  height: fit-content;
+  white-space: nowrap;
+}
+
+.quest-item.active-quest .quest-marker {
+  color: #55ff99;
+  border-color: #55ff99;
+  box-shadow: 0 0 6px rgba(85, 255, 153, 0.4);
+}
+
+.quest-body {
+  flex: 1;
+}
+
+.quest-main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.quest-title {
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.quest-company {
+  font-size: 1rem;
+  color: var(--pip-green);
+  border: 1px solid var(--pip-green-border);
+  padding: 2px 8px;
+  background: var(--pip-green-dark);
+}
+
+.quest-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: #9cdbba;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.status-active {
+  color: #55ff99;
+  font-weight: bold;
+}
+.status-done {
+  color: var(--pip-green-dim);
+}
+
+.quest-desc {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  color: #d1f7e0;
+}
+
+.quest-rewards {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.reward-label {
+  font-weight: bold;
+  color: var(--pip-green);
+}
+
+.badge {
+  background: #06160a;
+  border: 1px solid var(--pip-green-border);
+  padding: 2px 6px;
+  border-radius: 2px;
+  color: #b5eed0;
+}
+
+/* =========================================================
+   TAB 3: PERKS (SKILLS MATRIX)
+   ========================================================= */
+.perks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.perk-card {
+  display: flex;
+  gap: 14px;
+  background: rgba(11, 28, 17, 0.45);
+  border: 1px solid var(--pip-green-border);
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.perk-card:hover {
+  border-color: var(--pip-green);
+  background: rgba(20, 97, 50, 0.3);
+  transform: translateY(-2px);
+}
+
+.perk-icon {
+  font-size: 2rem;
+  padding: 4px;
+  border: 1px solid var(--pip-green-border);
+  background: #020704;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+}
+
+.perk-content {
+  flex: 1;
+}
+
+.perk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.perk-name {
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.perk-stars {
+  color: var(--pip-green);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}
+
+.perk-sub {
+  font-size: 0.82rem;
+  color: #8cffc1;
+  margin-bottom: 6px;
+}
+
+.perk-text {
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: #c0f0d4;
+}
+
+/* =========================================================
+   TAB 4: DATA (EDUCATION)
+   ========================================================= */
+.edu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.edu-card {
+  background: rgba(11, 28, 17, 0.45);
+  border: 1px solid var(--pip-green-border);
+  padding: 18px;
+}
+
+.edu-card.featured-edu {
+  border-left: 5px solid var(--pip-green);
+}
+
+.edu-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--pip-green-border);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.edu-crest {
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: var(--pip-green-dark);
+  border: 2px solid var(--pip-green);
+  color: #fff;
+  padding: 8px 12px;
+}
+
+.edu-headline {
+  flex: 1;
+}
+
+.edu-school {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.edu-location {
+  font-size: 0.85rem;
+  color: var(--pip-green-dim);
+}
+
+.edu-years {
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: #041007;
+  border: 1px solid var(--pip-green-border);
+  padding: 4px 10px;
+}
+
+.degree-highlight {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.degree-prefix {
+  font-weight: bold;
+  color: var(--pip-green-dim);
+}
+
+.degree-title {
+  color: #fff;
+  font-weight: bold;
+}
+
+.minors-group {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.minor-pill {
+  background: #072212;
+  border: 1px solid var(--pip-green-border);
+  padding: 4px 10px;
+  font-size: 0.9rem;
+}
+
+.minor-label {
+  color: var(--pip-green-dim);
+  margin-right: 4px;
+}
+
+.edu-notes {
+  font-size: 0.95rem;
+  color: #c9f5db;
+}
+
+.edu-subtext {
+  font-size: 0.9rem;
+  color: #a4e9be;
+}
+
+/* =========================================================
+   TAB 5: RADIO (COMMS & TRANSMISSION)
+   ========================================================= */
+.radio-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+}
+
+.radio-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.channel-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(11, 28, 17, 0.45);
+  border: 1px solid var(--pip-green-border);
+  padding: 14px;
+  transition: all 0.2s ease;
+}
+
+.channel-box.active-channel {
+  border-color: var(--pip-green);
+  border-left: 4px solid var(--pip-green);
+  background: rgba(20, 97, 50, 0.35);
+}
+
+.signal-waves {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 24px;
+}
+
+.signal-waves .wave {
+  width: 4px;
+  background: var(--pip-green);
+  border-radius: 1px;
+}
+
+.signal-waves .wave:nth-child(1) { height: 8px; animation: wavePulse 1s infinite ease-in-out; }
+.signal-waves .wave:nth-child(2) { height: 16px; animation: wavePulse 1.2s infinite ease-in-out 0.2s; }
+.signal-waves .wave:nth-child(3) { height: 24px; animation: wavePulse 0.9s infinite ease-in-out 0.4s; }
+
+@keyframes wavePulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.6; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.channel-info {
+  flex: 1;
+}
+
+.channel-freq {
+  font-size: 0.78rem;
+  color: var(--pip-green-dim);
+}
+
+.channel-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  margin: 2px 0;
+  word-break: break-all;
+}
+
+.channel-desc {
+  font-size: 0.8rem;
+  color: #8cffc1;
+}
+
+.radio-action-btn {
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.radio-transmission-terminal {
+  background: rgba(11, 28, 17, 0.45);
+  border: 1px solid var(--pip-green-border);
+  padding: 16px;
+}
+
+.radio-transmission-terminal .box-title {
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.transmission-tip {
+  font-size: 0.88rem;
+  margin-bottom: 14px;
+  color: #c9f5db;
+}
+
+.radio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: bold;
+  color: var(--pip-green);
+}
+
+.pip-input {
+  background: #030a05;
+  border: 1px solid var(--pip-green-border);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.pip-input:focus {
+  border-color: var(--pip-green);
+  box-shadow: 0 0 8px rgba(27, 255, 128, 0.4);
+}
+
+.submit-beacon-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* =========================================================
+   BOTTOM HUD STATUS BAR
+   ========================================================= */
+.pipboy-footer {
+  border-top: 2px solid var(--pip-green-border);
+  padding-top: 10px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.footer-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-item {
+  color: #fff;
+}
+
+.footer-item .f-label {
+  color: var(--pip-green-dim);
+  margin-right: 4px;
+}
+
+.footer-status-text {
+  color: var(--pip-green);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE / TABLET)
+   ========================================================= */
+@media (max-width: 900px) {
+  .panel-columns {
+    grid-template-columns: 1fr;
+  }
+  .radio-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .pipboy-bezel {
+    margin: 4px auto;
+    padding: 12px 6px;
+    border-width: 2px;
+  }
+  .bezel-screw, .pipboy-knob {
+    display: none;
+  }
+  .pipboy-tabs {
+    gap: 4px;
+    justify-content: space-between;
+  }
+  .tab-btn {
+    font-size: 0.95rem;
+    padding: 4px 6px;
+  }
+  .character-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .character-quote {
+    border-left: none;
+    border-top: 1px solid var(--pip-green);
+    padding-top: 6px;
+  }
+  .ascii-logo {
+    font-size: 9px;
+  }
+}
