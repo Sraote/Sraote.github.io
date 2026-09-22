@@ -196,11 +196,18 @@
   }
 
   // Handle Video Boot
+  const videoStartPrompt = document.getElementById('videoStartPrompt');
+  const videoStartBtn = document.getElementById('videoStartBtn');
+
   function initVideoBoot() {
     if (!pipboyBootVideo || !videoBootOverlay) {
       runFallbackTerminalBoot();
       return;
     }
+
+    // Set unmuted by default
+    pipboyBootVideo.muted = false;
+    pipboyBootVideo.volume = 1.0;
 
     // Video Audio Button Toggle
     if (videoAudioBtn) {
@@ -222,63 +229,102 @@
       });
     }
 
-    // Clicking anywhere on video screen skips intro
-    videoBootOverlay.addEventListener('click', () => {
-      finishAllBootSequences();
+    // Clicking anywhere on the video overlay unmutes audio (does NOT skip prematurely)
+    videoBootOverlay.addEventListener('click', (e) => {
+      if (e.target === skipVideoBtn || (skipVideoBtn && skipVideoBtn.contains(e.target))) {
+        return;
+      }
+      if (pipboyBootVideo.muted) {
+        pipboyBootVideo.muted = false;
+        pipboyBootVideo.play().catch(() => {});
+        updateVideoAudioBtnUI();
+      } else if (pipboyBootVideo.paused) {
+        pipboyBootVideo.play().catch(() => {});
+      }
     });
 
-    // When video ends naturally, transition to Pip-Boy
+    // Start button for strict autoplay environments (e.g. Firefox strict privacy)
+    if (videoStartBtn) {
+      videoStartBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (videoStartPrompt) videoStartPrompt.style.display = 'none';
+        pipboyBootVideo.muted = false;
+        pipboyBootVideo.volume = 1.0;
+        pipboyBootVideo.play().then(() => {
+          updateVideoAudioBtnUI();
+        }).catch(() => {
+          finishAllBootSequences();
+        });
+      });
+    }
+
+    // When video ends naturally, transition smoothly to Pip-Boy
     pipboyBootVideo.addEventListener('ended', () => {
       finishAllBootSequences();
     });
 
-    // If video fails to load or file not found (e.g. before user places boot.mp4)
+    // If video file fails to load
     pipboyBootVideo.addEventListener('error', () => {
-      console.warn('Boot video not found or could not be loaded. Falling back to terminal boot.');
+      console.warn('Boot video could not be loaded. Falling back to terminal boot.');
       if (videoBootOverlay) {
         videoBootOverlay.style.display = 'none';
       }
       runFallbackTerminalBoot();
     });
 
-    // Try starting video
-    const startPlay = () => {
-      // Attempt unmuted first
+    // Start playback routine
+    const attemptPlay = () => {
+      // First attempt: UNMUTED playback
       pipboyBootVideo.muted = false;
+      pipboyBootVideo.volume = 1.0;
       const playPromise = pipboyBootVideo.play();
+
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
+            // Succeeded with unmuted audio!
+            if (videoStartPrompt) videoStartPrompt.style.display = 'none';
             updateVideoAudioBtnUI();
           })
-          .catch(() => {
-            // Autoplay policy prevented unmuted playback -> mute and autoplay
+          .catch((err) => {
+            console.log('Unmuted autoplay prevented by browser policy, attempting muted fallback:', err);
+            // Second attempt: Muted playback with click-to-unmute prompt
             pipboyBootVideo.muted = true;
             pipboyBootVideo.play()
               .then(() => {
                 updateVideoAudioBtnUI();
+                // Add one-time window listener to unmute on first click or touch
+                const unmuteOnInteraction = () => {
+                  pipboyBootVideo.muted = false;
+                  updateVideoAudioBtnUI();
+                  window.removeEventListener('click', unmuteOnInteraction);
+                  window.removeEventListener('touchstart', unmuteOnInteraction);
+                  window.removeEventListener('keydown', unmuteOnInteraction);
+                };
+                window.addEventListener('click', unmuteOnInteraction, { once: true });
+                window.addEventListener('touchstart', unmuteOnInteraction, { once: true });
+                window.addEventListener('keydown', unmuteOnInteraction, { once: true });
               })
-              .catch(() => {
-                // If playback is entirely blocked or file missing, fallback
-                if (videoBootOverlay) videoBootOverlay.style.display = 'none';
-                runFallbackTerminalBoot();
+              .catch((err2) => {
+                console.log('Autoplay fully restricted by browser:', err2);
+                // If both unmuted and muted autoplay are blocked by browser (e.g. strict Firefox):
+                if (videoStartPrompt) {
+                  videoStartPrompt.style.display = 'block';
+                } else {
+                  finishAllBootSequences();
+                }
               });
           });
       }
     };
 
-    // If ready, play; otherwise wait for canplay
-    if (pipboyBootVideo.readyState >= 2) {
-      startPlay();
+    // Trigger playback as soon as data or metadata is ready
+    if (pipboyBootVideo.readyState >= 1) {
+      attemptPlay();
     } else {
-      pipboyBootVideo.addEventListener('canplay', startPlay, { once: true });
-      // Timeout fallback if video takes too long to load (e.g. missing file)
-      setTimeout(() => {
-        if (!bootFinished && pipboyBootVideo.readyState === 0) {
-          if (videoBootOverlay) videoBootOverlay.style.display = 'none';
-          runFallbackTerminalBoot();
-        }
-      }, 1500);
+      pipboyBootVideo.addEventListener('loadedmetadata', attemptPlay, { once: true });
+      pipboyBootVideo.addEventListener('canplay', attemptPlay, { once: true });
+      pipboyBootVideo.load();
     }
   }
 

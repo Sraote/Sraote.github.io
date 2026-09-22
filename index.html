@@ -30,6 +30,13 @@
     <div class="video-crt-scanlines"></div>
     <div class="video-vignette"></div>
 
+    <!-- Centered Prompt if Browser Blocks Autoplay (Firefox/Safari/Chrome) -->
+    <div class="video-start-prompt" id="videoStartPrompt" style="display: none;">
+      <button class="video-start-btn" id="videoStartBtn">
+        [ ▶ INITIALIZE PIP-BOY 3000 (CLICK TO START WITH AUDIO) ]
+      </button>
+    </div>
+
     <!-- Video Controls Bar -->
     <div class="video-controls-bar">
       <button class="video-control-btn" id="videoAudioBtn" title="Toggle Audio">[ 🔊 UNMUTE AUDIO ]</button>
@@ -189,81 +196,50 @@
                 </div>
               </div>
 
-              <!-- Right Column: S.P.E.C.I.A.L. & Attributes -->
+              <!-- Right Column: Operative Profile Summary & Action Buttons -->
               <div class="column-right">
-                <div class="section-title-bar">S.P.E.C.I.A.L. ATTRIBUTES</div>
+                <div class="section-title-bar">OPERATIVE PROFILE // EXECUTIVE SUMMARY</div>
                 
-                <div class="special-grid">
-                  <div class="special-card">
-                    <span class="special-letter">S</span>
-                    <div class="special-info">
-                      <div class="special-name">STRENGTH</div>
-                      <div class="special-desc">Work Ethic & Resilience (Bar Back & Crew Exp)</div>
-                    </div>
-                    <span class="special-score">08</span>
+                <div class="profile-summary-box">
+                  <div class="profile-field-row">
+                    <span class="field-label">CURRENT ROLE:</span>
+                    <span class="field-value highlight-active">AI TRAINER @ HANDSHAKE (ACTIVE)</span>
                   </div>
-
-                  <div class="special-card">
-                    <span class="special-letter">P</span>
-                    <div class="special-info">
-                      <div class="special-name">PERCEPTION</div>
-                      <div class="special-desc">Behavioral Analytics & Psychology Minor</div>
-                    </div>
-                    <span class="special-score">09</span>
+                  <div class="profile-field-row">
+                    <span class="field-label">EDUCATION:</span>
+                    <span class="field-value">THE UNIVERSITY OF MIAMI (2023 – 2027)</span>
                   </div>
-
-                  <div class="special-card">
-                    <span class="special-letter">E</span>
-                    <div class="special-info">
-                      <div class="special-name">ENDURANCE</div>
-                      <div class="special-desc">Fast-paced, high-pressure execution</div>
-                    </div>
-                    <span class="special-score">08</span>
+                  <div class="profile-field-row">
+                    <span class="field-label">MAJOR:</span>
+                    <span class="field-value">DATA SCIENCE & ARTIFICIAL INTELLIGENCE</span>
                   </div>
-
-                  <div class="special-card">
-                    <span class="special-letter">C</span>
-                    <div class="special-info">
-                      <div class="special-name">CHARISMA</div>
-                      <div class="special-desc">Customer Service, Team Collaboration & Comms</div>
-                    </div>
-                    <span class="special-score">09</span>
+                  <div class="profile-field-row">
+                    <span class="field-label">DOUBLE MINORS:</span>
+                    <span class="field-value">COMPUTER SCIENCE & PSYCHOLOGY</span>
                   </div>
-
-                  <div class="special-card highlight-special">
-                    <span class="special-letter">I</span>
-                    <div class="special-info">
-                      <div class="special-name">INTELLIGENCE</div>
-                      <div class="special-desc">Data Science, Machine Learning & AI Training</div>
-                    </div>
-                    <span class="special-score">10</span>
+                  <div class="profile-field-row">
+                    <span class="field-label">CLOUD & INFRASTRUCTURE:</span>
+                    <span class="field-value">AMAZON WEB SERVICES (AWS) // REARC INTERN</span>
                   </div>
-
-                  <div class="special-card highlight-special">
-                    <span class="special-letter">A</span>
-                    <div class="special-info">
-                      <div class="special-name">AGILITY</div>
-                      <div class="special-desc">Cloud Infrastructure (AWS) & Modern Dev</div>
-                    </div>
-                    <span class="special-score">09</span>
-                  </div>
-
-                  <div class="special-card">
-                    <span class="special-letter">L</span>
-                    <div class="special-info">
-                      <div class="special-name">LUCK</div>
-                      <div class="special-desc">Turning complex challenges into tangible wins</div>
-                    </div>
-                    <span class="special-score">09</span>
+                  <div class="profile-field-row">
+                    <span class="field-label">BASE COORDINATES:</span>
+                    <span class="field-value">MIAMI, FLORIDA // VAULT 305</span>
                   </div>
                 </div>
 
+                <div class="profile-overview-box">
+                  <div class="box-title">/// OBJECTIVE & VALUE PROPOSITION</div>
+                  <p>
+                    Passionate about the convergence of <strong>Artificial Intelligence, Cloud Computing (AWS), and Cognitive Behavior</strong>. Experienced in frontier AI model evaluation, data pipelines, and fast-paced operational teamwork. Actively seeking opportunities to build intelligent, resilient systems that turn complex challenges into high-impact achievements.
+                  </p>
+                </div>
+
                 <div class="action-footer-buttons">
-                  <a href="#tab-radio" class="pip-btn primary-btn switch-tab-link" data-target="radio">
-                    [ TRANSMIT MESSAGE / CONTACT ▶ ]
+                  <a href="https://www.linkedin.com/in/sanjivraote023/" target="_blank" rel="noopener noreferrer" class="pip-btn primary-btn">
+                    [ ACCESS LINKEDIN PROFILE ↗ ]
                   </a>
-                  <a href="https://www.linkedin.com/in/sanjivraote023" target="_blank" rel="noopener noreferrer" class="pip-btn">
-                    [ ACCESS LINKEDIN ↗ ]
+                  <a href="#tab-radio" class="pip-btn switch-tab-link" data-target="radio">
+                    [ TRANSMIT MESSAGE / CONTACT ▶ ]
                   </a>
                 </div>
               </div>
@@ -589,10 +565,10 @@
                   </div>
                   <div class="channel-info">
                     <div class="channel-freq">FREQ: 104.2 MHz [NET BROADCAST]</div>
-                    <h3 class="channel-title">linkedin.com/in/sanjivraote023</h3>
+                    <h3 class="channel-title">linkedin.com/in/sanjivraote023/</h3>
                     <p class="channel-desc">Public professional network profile, connections & updates.</p>
                   </div>
-                  <a href="https://www.linkedin.com/in/sanjivraote023" target="_blank" rel="noopener noreferrer" class="pip-btn radio-action-btn">
+                  <a href="https://www.linkedin.com/in/sanjivraote023/" target="_blank" rel="noopener noreferrer" class="pip-btn radio-action-btn">
                     [ OPEN FREQUENCY ↗ ]
                   </a>
                 </div>

@@ -264,6 +264,43 @@ html, body {
   font-weight: bold;
 }
 
+.video-start-prompt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 25;
+  text-align: center;
+  width: 90%;
+  max-width: 540px;
+}
+
+.video-start-btn {
+  background: rgba(4, 15, 7, 0.95);
+  color: var(--pip-green);
+  border: 2px solid var(--pip-green);
+  padding: 16px 24px;
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(27, 255, 128, 0.65);
+  text-shadow: 0 0 8px var(--pip-green);
+  animation: pulseGlow 1.5s infinite alternate;
+  width: 100%;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1); box-shadow: 0 0 15px rgba(27, 255, 128, 0.4); }
+  100% { transform: scale(1.03); box-shadow: 0 0 30px rgba(27, 255, 128, 0.85); }
+}
+
+.video-start-btn:hover {
+  background: var(--pip-green);
+  color: #040905;
+  text-shadow: none;
+}
+
 /* =========================================================
    ROBCO BOOT LOADER OVERLAY
    ========================================================= */
@@ -636,65 +673,62 @@ html, body {
   margin-bottom: 6px;
 }
 
-/* S.P.E.C.I.A.L. Grid */
-.special-grid {
+/* Operative Profile Summary */
+.profile-summary-box {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 18px;
-}
-
-.special-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   background: rgba(11, 28, 17, 0.45);
   border: 1px solid var(--pip-green-border);
-  padding: 6px 12px;
-  transition: all 0.2s ease;
+  padding: 14px;
+  margin-bottom: 14px;
 }
 
-.special-card:hover {
-  background: rgba(20, 97, 50, 0.35);
-  border-color: var(--pip-green);
-  transform: translateX(4px);
+.profile-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  border-bottom: 1px dashed rgba(20, 97, 50, 0.6);
+  padding-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
-.special-card.highlight-special {
-  border-left: 4px solid var(--pip-green);
+.profile-field-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
-.special-letter {
-  font-size: 1.3rem;
+.profile-field-row .field-label {
+  color: var(--pip-green-dim);
   font-weight: bold;
+}
+
+.profile-field-row .field-value {
   color: #fff;
-  width: 22px;
-  text-align: center;
+  font-weight: bold;
+  text-align: right;
 }
 
-.special-info {
-  flex: 1;
+.profile-field-row .highlight-active {
+  color: #55ff99;
+  text-shadow: 0 0 6px rgba(85, 255, 153, 0.5);
 }
 
-.special-name {
+.profile-overview-box {
+  background: rgba(11, 28, 17, 0.3);
+  border: 1px dashed var(--pip-green-border);
+  padding: 14px;
   font-size: 0.95rem;
-  font-weight: bold;
-  color: var(--pip-green);
+  margin-bottom: 18px;
+  line-height: 1.4;
 }
 
-.special-desc {
-  font-size: 0.8rem;
-  color: #a4e9be;
-}
-
-.special-score {
-  font-size: 1.15rem;
+.profile-overview-box .box-title {
   font-weight: bold;
   color: #fff;
-  background: var(--pip-green-dark);
-  border: 1px solid var(--pip-green);
-  padding: 2px 8px;
-  border-radius: 2px;
+  margin-bottom: 6px;
 }
 
 .action-footer-buttons {
