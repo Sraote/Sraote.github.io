@@ -205,9 +205,39 @@
       return;
     }
 
-    // Set unmuted by default
-    pipboyBootVideo.muted = false;
-    pipboyBootVideo.volume = 1.0;
+    let isStarting = false;
+
+    function safePlay(unmuted = true) {
+      if (bootFinished) return;
+      if (isStarting) return;
+      if (!pipboyBootVideo.paused && (!unmuted || !pipboyBootVideo.muted)) {
+        if (videoStartPrompt) videoStartPrompt.style.display = 'none';
+        return;
+      }
+
+      isStarting = true;
+      pipboyBootVideo.muted = !unmuted;
+      pipboyBootVideo.volume = 1.0;
+
+      const playPromise = pipboyBootVideo.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            isStarting = false;
+            if (videoStartPrompt) videoStartPrompt.style.display = 'none';
+            updateVideoAudioBtnUI();
+          })
+          .catch((err) => {
+            isStarting = false;
+            console.log('Playback requires user gesture on this browser:', err);
+            if (videoStartPrompt) {
+              videoStartPrompt.style.display = 'block';
+            }
+          });
+      } else {
+        isStarting = false;
+      }
+    }
 
     // Video Audio Button Toggle
     if (videoAudioBtn) {
@@ -215,8 +245,8 @@
         e.stopPropagation();
         pipboyBootVideo.muted = !pipboyBootVideo.muted;
         updateVideoAudioBtnUI();
-        if (!pipboyBootVideo.muted) {
-          pipboyBootVideo.play().catch(() => {});
+        if (!pipboyBootVideo.muted && pipboyBootVideo.paused) {
+          safePlay(true);
         }
       });
     }
@@ -229,34 +259,26 @@
       });
     }
 
-    // Clicking anywhere on the video overlay unmutes audio (does NOT skip prematurely)
-    videoBootOverlay.addEventListener('click', (e) => {
-      if (e.target === skipVideoBtn || (skipVideoBtn && skipVideoBtn.contains(e.target))) {
+    // Single unified interaction handler for starting playback with audio
+    function triggerUserActivation(e) {
+      if (bootFinished) return;
+      if (e && (e.target === skipVideoBtn || (skipVideoBtn && skipVideoBtn.contains(e.target)))) {
         return;
       }
-      if (pipboyBootVideo.muted) {
-        pipboyBootVideo.muted = false;
-        pipboyBootVideo.play().catch(() => {});
-        updateVideoAudioBtnUI();
-      } else if (pipboyBootVideo.paused) {
-        pipboyBootVideo.play().catch(() => {});
+      if (e && (e.target === videoAudioBtn || (videoAudioBtn && videoAudioBtn.contains(e.target)))) {
+        return;
       }
-    });
+      safePlay(true);
+    }
 
-    // Start button for strict autoplay environments (e.g. Firefox strict privacy)
     if (videoStartBtn) {
       videoStartBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (videoStartPrompt) videoStartPrompt.style.display = 'none';
-        pipboyBootVideo.muted = false;
-        pipboyBootVideo.volume = 1.0;
-        pipboyBootVideo.play().then(() => {
-          updateVideoAudioBtnUI();
-        }).catch(() => {
-          finishAllBootSequences();
-        });
+        triggerUserActivation(e);
       });
     }
+
+    videoBootOverlay.addEventListener('click', triggerUserActivation);
 
     // When video ends naturally, transition smoothly to Pip-Boy
     pipboyBootVideo.addEventListener('ended', () => {
@@ -272,65 +294,19 @@
       runFallbackTerminalBoot();
     });
 
-    // Start playback routine (Strictly unmuted)
-    const startUnmutedPlayback = () => {
-      pipboyBootVideo.muted = false;
-      pipboyBootVideo.volume = 1.0;
-      pipboyBootVideo.currentTime = 0;
-      return pipboyBootVideo.play();
+    // Auto-initiate playback on page load
+    let autoAttempted = false;
+    const initialAutoPlay = () => {
+      if (autoAttempted) return;
+      autoAttempted = true;
+      safePlay(true);
     };
 
-    const attemptPlay = () => {
-      startUnmutedPlayback()
-        .then(() => {
-          // Browser allowed unmuted autoplay!
-          if (videoStartPrompt) videoStartPrompt.style.display = 'none';
-          updateVideoAudioBtnUI();
-        })
-        .catch((err) => {
-          // Browser blocked unmuted autoplay!
-          console.log('Browser blocked unmuted autoplay. Holding for user initiation:', err);
-          
-          // DO NOT play muted! Pause and wait for user click/tap so it plays with 100% sound.
-          pipboyBootVideo.pause();
-          pipboyBootVideo.currentTime = 0;
-          pipboyBootVideo.muted = false;
-          pipboyBootVideo.volume = 1.0;
-          
-          if (videoStartPrompt) {
-            videoStartPrompt.style.display = 'block';
-          }
-
-          // Single global listener: clicking or pressing ANY key starts the video with audio
-          const userInitiatedPlay = (e) => {
-            if (e && (e.target === skipVideoBtn || (skipVideoBtn && skipVideoBtn.contains(e.target)))) {
-              return;
-            }
-            if (videoStartPrompt) videoStartPrompt.style.display = 'none';
-            pipboyBootVideo.muted = false;
-            pipboyBootVideo.volume = 1.0;
-            pipboyBootVideo.play().then(() => {
-              updateVideoAudioBtnUI();
-            }).catch(() => {});
-
-            window.removeEventListener('click', userInitiatedPlay);
-            window.removeEventListener('touchstart', userInitiatedPlay);
-            window.removeEventListener('keydown', userInitiatedPlay);
-          };
-
-          window.addEventListener('click', userInitiatedPlay, { once: true });
-          window.addEventListener('touchstart', userInitiatedPlay, { once: true });
-          window.addEventListener('keydown', userInitiatedPlay, { once: true });
-        });
-    };
-
-    // Trigger playback as soon as data or metadata is ready
     if (pipboyBootVideo.readyState >= 1) {
-      attemptPlay();
+      initialAutoPlay();
     } else {
-      pipboyBootVideo.addEventListener('loadedmetadata', attemptPlay, { once: true });
-      pipboyBootVideo.addEventListener('canplay', attemptPlay, { once: true });
-      pipboyBootVideo.load();
+      pipboyBootVideo.addEventListener('loadedmetadata', initialAutoPlay, { once: true });
+      pipboyBootVideo.addEventListener('canplay', initialAutoPlay, { once: true });
     }
   }
 
@@ -507,9 +483,11 @@
   // =========================================================================
   // 5. INITIALIZE ON LOAD
   // =========================================================================
-  window.addEventListener('DOMContentLoaded', () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVideoBoot);
+  } else {
     initVideoBoot();
-  });
+  }
 
 })();
 
