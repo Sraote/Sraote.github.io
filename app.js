@@ -14,12 +14,36 @@
     constructor() {
       this.ctx = null;
       this.enabled = true;
+      this.tabBuffer = null;
       
+      // Preload custom tab audio
+      this.tabAudio = new Audio('tab.wav');
+      this.tabAudio.preload = 'auto';
+
       // Load preference from localStorage
       const saved = localStorage.getItem('pipboy_sfx_enabled');
       if (saved !== null) {
         this.enabled = saved === 'true';
       }
+
+      this.loadTabBuffer();
+    }
+
+    loadTabBuffer() {
+      fetch('tab.wav')
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+          if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) this.ctx = new AudioContext();
+          }
+          if (this.ctx) {
+            this.ctx.decodeAudioData(arrayBuffer, (decoded) => {
+              this.tabBuffer = decoded;
+            }, () => {});
+          }
+        })
+        .catch(() => {});
     }
 
     init() {
@@ -27,6 +51,7 @@
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (AudioContext) {
           this.ctx = new AudioContext();
+          if (!this.tabBuffer) this.loadTabBuffer();
         }
       }
       if (this.ctx && this.ctx.state === 'suspended') {
@@ -44,32 +69,31 @@
       return this.enabled;
     }
 
-    // High mechanical click for tab changes
+    // Play user custom tab.wav sound effect
     playTabClick() {
       if (!this.enabled) return;
       this.init();
-      if (!this.ctx) return;
 
-      try {
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(880, now); // A5
-        osc.frequency.exponentialRampToValueAtTime(440, now + 0.04);
-
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-
-        osc.start(now);
-        osc.stop(now + 0.045);
-      } catch (e) {
-        // Audio error fallback
+      // 1. Preferred: Web Audio Buffer Source for instant, lag-free polyphonic playback
+      if (this.ctx && this.tabBuffer) {
+        try {
+          const source = this.ctx.createBufferSource();
+          source.buffer = this.tabBuffer;
+          const gainNode = this.ctx.createGain();
+          gainNode.gain.setValueAtTime(0.75, this.ctx.currentTime);
+          source.connect(gainNode);
+          gainNode.connect(this.ctx.destination);
+          source.start(0);
+          return;
+        } catch (e) {}
       }
+
+      // 2. Fallback: Cloned HTML5 Audio element
+      try {
+        const audioClone = this.tabAudio.cloneNode();
+        audioClone.volume = 0.75;
+        audioClone.play().catch(() => {});
+      } catch (e) {}
     }
 
     // Fast keystroke blip for boot terminal
