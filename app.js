@@ -16,7 +16,7 @@
       this.enabled = true;
       this.tabBuffer = null;
       
-      // Pool of pre-instantiated Audio elements (100% reliable in Firefox & Chrome)
+      // Pool of pre-instantiated Audio elements (100% reliable in Firefox, Chrome & Mobile)
       this.poolSize = 6;
       this.poolIndex = 0;
       this.audioPool = [];
@@ -28,6 +28,12 @@
         this.audioPool.push(audio);
       }
 
+      // Preload custom boot complete audio (plays right after intro video)
+      this.bootAudio = new Audio('boot_complete.wav');
+      this.bootAudio.preload = 'auto';
+      this.bootAudio.volume = 0.85;
+      this.primed = false;
+
       // Load preference from localStorage
       const saved = localStorage.getItem('pipboy_sfx_enabled');
       if (saved !== null) {
@@ -35,6 +41,15 @@
       }
 
       this.loadTabBuffer();
+    }
+
+    primeAudio() {
+      if (this.primed) return;
+      this.primed = true;
+      try {
+        this.bootAudio.load();
+        this.audioPool.forEach(a => a.load());
+      } catch (e) {}
     }
 
     loadTabBuffer() {
@@ -76,7 +91,7 @@
       return this.enabled;
     }
 
-    // Play user custom tab.wav sound effect (Guaranteed in Firefox & Chrome)
+    // Play user custom tab.wav sound effect (Guaranteed in Firefox, Chrome & Mobile)
     playTabClick() {
       if (!this.enabled) return;
 
@@ -94,7 +109,7 @@
         } catch (e) {}
       }
 
-      // 2. Primary preloaded Audio Pool (Directly allowed by Firefox user gesture)
+      // 2. Primary preloaded Audio Pool (Directly allowed by browser user gesture)
       try {
         const audio = this.audioPool[this.poolIndex];
         this.poolIndex = (this.poolIndex + 1) % this.poolSize;
@@ -137,40 +152,25 @@
       }
     }
 
-    // Authentic dual-tone Pip-Boy boot completion chime
+    // Play user custom boot_complete.wav sound effect (Runs across Firefox, Chrome & Mobile)
     playBootCompleteChime() {
       if (!this.enabled) return;
-      this.init();
-      if (!this.ctx) return;
-
       try {
-        const now = this.ctx.currentTime;
-        
-        // Note 1
-        const osc1 = this.ctx.createOscillator();
-        const gain1 = this.ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(587.33, now); // D5
-        gain1.gain.setValueAtTime(0.06, now);
-        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-        osc1.connect(gain1);
-        gain1.connect(this.ctx.destination);
-        osc1.start(now);
-        osc1.stop(now + 0.15);
-
-        // Note 2
-        const osc2 = this.ctx.createOscillator();
-        const gain2 = this.ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(880, now + 0.1); // A5
-        gain2.gain.setValueAtTime(0.08, now + 0.1);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-        osc2.connect(gain2);
-        gain2.connect(this.ctx.destination);
-        osc2.start(now + 0.1);
-        osc2.stop(now + 0.35);
+        this.bootAudio.currentTime = 0;
+        const p = this.bootAudio.play();
+        if (p !== undefined) {
+          p.catch(() => {
+            const fallback = new Audio('boot_complete.wav');
+            fallback.volume = 0.85;
+            fallback.play().catch(() => {});
+          });
+        }
       } catch (e) {
-        // Fallback
+        try {
+          const fallback = new Audio('boot_complete.wav');
+          fallback.volume = 0.85;
+          fallback.play().catch(() => {});
+        } catch (err) {}
       }
     }
   }
@@ -291,15 +291,19 @@
 
     // Skip video button
     if (skipVideoBtn) {
-      skipVideoBtn.addEventListener('click', (e) => {
+      const handleSkip = (e) => {
         e.stopPropagation();
+        sfx.primeAudio();
         finishAllBootSequences();
-      });
+      };
+      skipVideoBtn.addEventListener('click', handleSkip);
+      skipVideoBtn.addEventListener('touchend', handleSkip, { passive: true });
     }
 
     // Single unified interaction handler for starting playback with audio
     function triggerUserActivation(e) {
       if (bootFinished) return;
+      sfx.primeAudio();
       if (e && (e.target === skipVideoBtn || (skipVideoBtn && skipVideoBtn.contains(e.target)))) {
         return;
       }
@@ -314,9 +318,14 @@
         e.stopPropagation();
         triggerUserActivation(e);
       });
+      videoStartBtn.addEventListener('touchend', (e) => {
+        e.stopPropagation();
+        triggerUserActivation(e);
+      }, { passive: true });
     }
 
     videoBootOverlay.addEventListener('click', triggerUserActivation);
+    videoBootOverlay.addEventListener('touchend', triggerUserActivation, { passive: true });
 
     // When video ends naturally, transition smoothly to Pip-Boy
     pipboyBootVideo.addEventListener('ended', () => {
