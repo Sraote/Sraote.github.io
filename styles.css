@@ -929,74 +929,126 @@ body::after {
 }
 
 /* =========================================================
-   TAB 3: PERKS (SKILLS MATRIX)
+   TAB 3: PERKS (VERIFIED CERTIFICATIONS)
    ========================================================= */
-.perks-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
+.certs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.perk-card {
+.cert-card {
   display: flex;
-  gap: 14px;
+  gap: 18px;
   background: rgba(11, 28, 17, 0.45);
   border: 1px solid var(--pip-green-border);
-  padding: 16px;
+  border-left: 5px solid var(--pip-green);
+  padding: 18px 20px;
   transition: all 0.2s ease;
 }
 
-.perk-card:hover {
+.cert-card:hover {
   border-color: var(--pip-green);
-  background: rgba(20, 97, 50, 0.3);
-  transform: translateY(-2px);
+  background: rgba(20, 97, 50, 0.35);
+  transform: translateX(4px);
+  box-shadow: 0 0 15px rgba(27, 255, 128, 0.25);
 }
 
-.perk-icon {
-  font-size: 2rem;
-  padding: 4px;
-  border: 1px solid var(--pip-green-border);
+.cert-badge-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 68px;
+}
+
+.cert-icon {
+  font-size: 2.2rem;
   background: #020704;
+  border: 1px solid var(--pip-green-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-}
-
-.perk-content {
-  flex: 1;
-}
-
-.perk-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2px;
-}
-
-.perk-name {
-  font-size: 1.05rem;
-  font-weight: bold;
-  color: #fff;
-}
-
-.perk-stars {
-  color: var(--pip-green);
-  font-size: 0.9rem;
-  letter-spacing: 2px;
-}
-
-.perk-sub {
-  font-size: 0.82rem;
-  color: #8cffc1;
+  width: 60px;
+  height: 60px;
   margin-bottom: 6px;
 }
 
-.perk-text {
+.cert-rank {
+  font-size: 0.72rem;
+  color: var(--pip-green);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.cert-details {
+  flex: 1;
+}
+
+.cert-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cert-title {
+  font-size: 1.18rem;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.cert-issuer {
   font-size: 0.88rem;
-  line-height: 1.35;
-  color: #c0f0d4;
+  color: var(--pip-green);
+  border: 1px solid var(--pip-green-border);
+  background: var(--pip-green-dark);
+  padding: 2px 8px;
+}
+
+.cert-meta-row {
+  display: flex;
+  gap: 14px;
+  font-size: 0.85rem;
+  color: #9cdbba;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.cert-description {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: #d1f7e0;
+  margin-bottom: 12px;
+}
+
+.cert-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cert-topics {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cert-action-btn {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  font-weight: bold;
+}
+
+.cert-count {
+  font-size: 0.9rem;
+  color: var(--pip-green-dim);
+  padding-left: 12px;
 }
 
 /* =========================================================
