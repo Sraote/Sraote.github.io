@@ -140,7 +140,150 @@
   const sfx = new PipBoyAudio();
 
   // =========================================================================
-  // 2. ROBCO BOOT SEQUENCE DATA & CONTROLLER
+  // 2. VIDEO BOOT & ROBCO BOOT CONTROLLER
+  // =========================================================================
+  const videoBootOverlay = document.getElementById('videoBootOverlay');
+  const pipboyBootVideo = document.getElementById('pipboyBootVideo');
+  const videoAudioBtn = document.getElementById('videoAudioBtn');
+  const skipVideoBtn = document.getElementById('skipVideoBtn');
+
+  const bootOverlay = document.getElementById('bootOverlay');
+  const bootTerminalLog = document.getElementById('bootTerminalLog');
+  const skipBootBtn = document.getElementById('skipBootBtn');
+  let bootFinished = false;
+
+  function updateVideoAudioBtnUI() {
+    if (!videoAudioBtn || !pipboyBootVideo) return;
+    if (pipboyBootVideo.muted) {
+      videoAudioBtn.textContent = '[ 🔇 UNMUTE AUDIO ]';
+      videoAudioBtn.style.color = '#ffb347';
+      videoAudioBtn.style.borderColor = '#ffb347';
+    } else {
+      videoAudioBtn.textContent = '[ 🔊 MUTE AUDIO ]';
+      videoAudioBtn.style.color = 'var(--pip-green)';
+      videoAudioBtn.style.borderColor = 'var(--pip-green)';
+    }
+  }
+
+  function finishAllBootSequences() {
+    if (bootFinished) return;
+    bootFinished = true;
+
+    // Pause & stop video if running
+    if (pipboyBootVideo) {
+      try {
+        pipboyBootVideo.pause();
+      } catch (e) {}
+    }
+
+    // Fade out fullscreen video
+    if (videoBootOverlay) {
+      videoBootOverlay.classList.add('hidden');
+      setTimeout(() => {
+        videoBootOverlay.style.display = 'none';
+      }, 800);
+    }
+
+    // Fade out terminal overlay if active
+    if (bootOverlay) {
+      bootOverlay.classList.add('fade-out');
+      setTimeout(() => {
+        bootOverlay.style.display = 'none';
+      }, 600);
+    }
+
+    sfx.playBootCompleteChime();
+  }
+
+  // Handle Video Boot
+  function initVideoBoot() {
+    if (!pipboyBootVideo || !videoBootOverlay) {
+      runFallbackTerminalBoot();
+      return;
+    }
+
+    // Video Audio Button Toggle
+    if (videoAudioBtn) {
+      videoAudioBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        pipboyBootVideo.muted = !pipboyBootVideo.muted;
+        updateVideoAudioBtnUI();
+        if (!pipboyBootVideo.muted) {
+          pipboyBootVideo.play().catch(() => {});
+        }
+      });
+    }
+
+    // Skip video button
+    if (skipVideoBtn) {
+      skipVideoBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        finishAllBootSequences();
+      });
+    }
+
+    // Clicking anywhere on video screen skips intro
+    videoBootOverlay.addEventListener('click', () => {
+      finishAllBootSequences();
+    });
+
+    // When video ends naturally, transition to Pip-Boy
+    pipboyBootVideo.addEventListener('ended', () => {
+      finishAllBootSequences();
+    });
+
+    // If video fails to load or file not found (e.g. before user places boot.mp4)
+    pipboyBootVideo.addEventListener('error', () => {
+      console.warn('Boot video not found or could not be loaded. Falling back to terminal boot.');
+      if (videoBootOverlay) {
+        videoBootOverlay.style.display = 'none';
+      }
+      runFallbackTerminalBoot();
+    });
+
+    // Try starting video
+    const startPlay = () => {
+      // Attempt unmuted first
+      pipboyBootVideo.muted = false;
+      const playPromise = pipboyBootVideo.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            updateVideoAudioBtnUI();
+          })
+          .catch(() => {
+            // Autoplay policy prevented unmuted playback -> mute and autoplay
+            pipboyBootVideo.muted = true;
+            pipboyBootVideo.play()
+              .then(() => {
+                updateVideoAudioBtnUI();
+              })
+              .catch(() => {
+                // If playback is entirely blocked or file missing, fallback
+                if (videoBootOverlay) videoBootOverlay.style.display = 'none';
+                runFallbackTerminalBoot();
+              });
+          });
+      }
+    };
+
+    // If ready, play; otherwise wait for canplay
+    if (pipboyBootVideo.readyState >= 2) {
+      startPlay();
+    } else {
+      pipboyBootVideo.addEventListener('canplay', startPlay, { once: true });
+      // Timeout fallback if video takes too long to load (e.g. missing file)
+      setTimeout(() => {
+        if (!bootFinished && pipboyBootVideo.readyState === 0) {
+          if (videoBootOverlay) videoBootOverlay.style.display = 'none';
+          runFallbackTerminalBoot();
+        }
+      }, 1500);
+    }
+  }
+
+  // =========================================================================
+  // 3. FALLBACK ROBCO TERMINAL BOOT
   // =========================================================================
   const bootLines = [
     { text: "ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM", delay: 180 },
@@ -161,32 +304,14 @@
     { text: "WELCOME, OPERATIVE RAOTE.", delay: 300, className: "highlight" }
   ];
 
-  const bootOverlay = document.getElementById('bootOverlay');
-  const bootTerminalLog = document.getElementById('bootTerminalLog');
-  const skipBootBtn = document.getElementById('skipBootBtn');
-  let bootFinished = false;
-
-  function endBootSequence() {
+  async function runFallbackTerminalBoot() {
     if (bootFinished) return;
-    bootFinished = true;
-    sfx.playBootCompleteChime();
 
-    if (bootOverlay) {
-      bootOverlay.classList.add('fade-out');
-      setTimeout(() => {
-        bootOverlay.style.display = 'none';
-      }, 600);
-    }
-  }
-
-  async function runBootSequence() {
-    // Check if user has previously visited in current session
-    const hasBooted = sessionStorage.getItem('pipboy_booted');
-    if (hasBooted) {
-      endBootSequence();
+    // Check if terminal elements exist
+    if (!bootTerminalLog || !bootOverlay) {
+      finishAllBootSequences();
       return;
     }
-    sessionStorage.setItem('pipboy_booted', 'true');
 
     for (let i = 0; i < bootLines.length; i++) {
       if (bootFinished) break;
@@ -204,31 +329,31 @@
 
     if (!bootFinished) {
       await new Promise(r => setTimeout(r, 600));
-      endBootSequence();
+      finishAllBootSequences();
     }
   }
 
-  // Skip boot button
+  // Skip boot button for terminal
   if (skipBootBtn) {
     skipBootBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      endBootSequence();
+      finishAllBootSequences();
     });
   }
 
-  // Keyboard shortcut to skip boot
+  // Keyboard shortcut to skip any boot (Space / Enter / Escape)
   window.addEventListener('keydown', (e) => {
     if (!bootFinished && (e.code === 'Space' || e.code === 'Enter' || e.code === 'Escape')) {
       e.preventDefault();
-      endBootSequence();
+      finishAllBootSequences();
     }
   });
 
-  // Clicking anywhere on boot overlay advances/skips
+  // Clicking terminal overlay also skips
   if (bootOverlay) {
     bootOverlay.addEventListener('click', () => {
       if (!bootFinished) {
-        endBootSequence();
+        finishAllBootSequences();
       }
     });
   }
@@ -331,7 +456,8 @@
   // 5. INITIALIZE ON LOAD
   // =========================================================================
   window.addEventListener('DOMContentLoaded', () => {
-    runBootSequence();
+    initVideoBoot();
   });
 
 })();
+

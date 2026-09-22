@@ -1,10 +1,22 @@
-# Pip-Boy 3000 Portfolio // Sanjiv Raote
+# 📟 Pip-Boy 3000 Portfolio // Sanjiv Raote
 
 An authentic **Fallout Pip-Boy 3000** interactive web portfolio built with pure HTML5, CSS3, and JavaScript. Featuring a RobCo Industries BIOS boot terminal, CRT scanlines & phosphor glow, browser-synthesized audio effects (Web Audio API), and responsive navigation tabs.
 
 ---
 
-## How to Deploy to GitHub Pages (100% Free & 24/7)
+## 🎬 How to Add Your Boot-Up Video Clip
+
+Simply name your video clip **`boot.mp4`** (or `boot.webm` / `boot.mov`) and place it inside the project folder alongside `index.html`.
+
+- When visitors load the site, the video will automatically take over the full screen.
+- An **`[ 🔊 UNMUTE AUDIO ]`** button allows visitors to enable sound if their browser defaults to muted autoplay.
+- A **`[ SKIP INTRO ▶ ]`** button (and Space/Enter/Click) allows instant skipping directly into the Pip-Boy interface.
+- When the video finishes playing, it will automatically and smoothly transition into your portfolio.
+- *Graceful Fallback*: If `boot.mp4` is not present, the site automatically falls back to the green phosphor RobCo text bootloader.
+
+---
+
+## 🚀 How to Deploy to GitHub Pages (100% Free & 24/7)
 
 ### Method 1: Via GitHub Web Interface (No command line required!)
 1. Go to [GitHub.com](https://github.com) and create a new public repository named **`sanjivraote023.github.io`** (replace with your GitHub username).
@@ -33,7 +45,7 @@ git push -u origin main
 
 ---
 
-## Features Included
+## ⚡ Features Included
 
 - **RobCo BIOS Boot Sequence**: Line-by-line terminal boot-up sequence with typewriter sounds and a click/spacebar skip option.
 - **Synthesized Audio (Web Audio API)**: Real retro mechanical clicks and terminal beeps without any external `.mp3` files (zero loading latency, 100% reliable). Includes an on-screen mute/unmute toggle.

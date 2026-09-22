@@ -15,6 +15,28 @@
 </head>
 <body>
 
+  <!-- ==================================================== -->
+  <!-- FULLSCREEN PIP-BOY VIDEO BOOT OVERLAY                -->
+  <!-- ==================================================== -->
+  <div class="video-boot-overlay" id="videoBootOverlay">
+    <video id="pipboyBootVideo" class="boot-video" playsinline preload="auto">
+      <source src="boot.mp4" type="video/mp4">
+      <source src="boot.webm" type="video/webm">
+      <source src="boot.mov" type="video/quicktime">
+      Your browser does not support the video tag.
+    </video>
+    
+    <!-- CRT scanline & vignette over video -->
+    <div class="video-crt-scanlines"></div>
+    <div class="video-vignette"></div>
+
+    <!-- Video Controls Bar -->
+    <div class="video-controls-bar">
+      <button class="video-control-btn" id="videoAudioBtn" title="Toggle Audio">[ 🔊 UNMUTE AUDIO ]</button>
+      <button class="video-control-btn skip-btn" id="skipVideoBtn">[ SKIP INTRO (CLICK / SPACE) ▶ ]</button>
+    </div>
+  </div>
+
   <!-- Physical Bezel & CRT Container -->
   <div class="pipboy-bezel">
     

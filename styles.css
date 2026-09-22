@@ -177,6 +177,94 @@ html, body {
 }
 
 /* =========================================================
+   FULLSCREEN VIDEO BOOT OVERLAY
+   ========================================================= */
+.video-boot-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.video-boot-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.boot-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Authentic CRT scanlines on top of the video */
+.video-crt-scanlines {
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.4) 50%
+  );
+  background-size: 100% 3px;
+  z-index: 2;
+  opacity: 0.75;
+}
+
+.video-vignette {
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 3;
+}
+
+/* Floating video controls */
+.video-controls-bar {
+  position: absolute;
+  bottom: 28px;
+  right: 28px;
+  z-index: 10;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.video-control-btn {
+  background: rgba(4, 15, 7, 0.85);
+  color: var(--pip-green);
+  border: 1.5px solid var(--pip-green);
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(27, 255, 128, 0.35);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+}
+
+.video-control-btn:hover {
+  background: var(--pip-green);
+  color: #040905;
+  box-shadow: 0 0 16px var(--pip-green);
+}
+
+.video-control-btn.skip-btn {
+  font-weight: bold;
+}
+
+/* =========================================================
    ROBCO BOOT LOADER OVERLAY
    ========================================================= */
 .boot-overlay {
