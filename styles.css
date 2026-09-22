@@ -63,6 +63,37 @@ html, body {
 }
 
 /* =========================================================
+   GLOBAL SLIGHT CRT FILTER OVERLAY
+   ========================================================= */
+/* Delicate horizontal scanlines across entire website */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.20) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* Subtle CRT monitor vignette & edge curvature */
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.40) 100%);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5);
+  z-index: 9997;
+  pointer-events: none;
+}
+
+/* =========================================================
    PHYSICAL PIP-BOY BEZEL & ENCLOSURE
    ========================================================= */
 .pipboy-bezel {
