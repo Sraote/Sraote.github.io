@@ -275,6 +275,40 @@ html, body {
   max-width: 540px;
 }
 
+.start-prompt-terminal {
+  background: rgba(4, 15, 7, 0.94);
+  border: 2px solid var(--pip-green);
+  padding: 24px;
+  box-shadow: 0 0 35px rgba(27, 255, 128, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.start-prompt-title {
+  font-size: 1.15rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 6px;
+  text-shadow: 0 0 8px var(--pip-green);
+}
+
+.start-prompt-sub {
+  font-size: 0.85rem;
+  color: var(--pip-green-dim);
+  border-bottom: 1px dashed var(--pip-green-border);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+}
+
+.start-prompt-hint {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--pip-green);
+  letter-spacing: 1px;
+  animation: blink 1.2s infinite;
+}
+
 .video-start-btn {
   background: rgba(4, 15, 7, 0.95);
   color: var(--pip-green);

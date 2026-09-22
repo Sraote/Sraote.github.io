@@ -30,11 +30,16 @@
     <div class="video-crt-scanlines"></div>
     <div class="video-vignette"></div>
 
-    <!-- Centered Prompt if Browser Blocks Autoplay (Firefox/Safari/Chrome) -->
+    <!-- Centered Prompt if Browser Blocks Unmuted Autoplay (Firefox/Chrome/Safari) -->
     <div class="video-start-prompt" id="videoStartPrompt" style="display: none;">
-      <button class="video-start-btn" id="videoStartBtn">
-        [ ▶ INITIALIZE PIP-BOY 3000 (CLICK TO START WITH AUDIO) ]
-      </button>
+      <div class="start-prompt-terminal">
+        <div class="start-prompt-title">ROBCO INDUSTRIES (TM) TERMLINK v3.8</div>
+        <div class="start-prompt-sub">PIP-BOY 3000 INITIALIZED // SOUND MATRIX READY</div>
+        <button class="video-start-btn" id="videoStartBtn">
+          [ ▶ POWER ON PIP-BOY 3000 (WITH AUDIO) ]
+        </button>
+        <div class="start-prompt-hint">> CLICK ANYWHERE OR PRESS ANY KEY TO INITIALIZE <</div>
+      </div>
     </div>
 
     <!-- Video Controls Bar -->

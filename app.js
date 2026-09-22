@@ -272,50 +272,56 @@
       runFallbackTerminalBoot();
     });
 
-    // Start playback routine
-    const attemptPlay = () => {
-      // First attempt: UNMUTED playback
+    // Start playback routine (Strictly unmuted)
+    const startUnmutedPlayback = () => {
       pipboyBootVideo.muted = false;
       pipboyBootVideo.volume = 1.0;
-      const playPromise = pipboyBootVideo.play();
+      pipboyBootVideo.currentTime = 0;
+      return pipboyBootVideo.play();
+    };
 
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Succeeded with unmuted audio!
+    const attemptPlay = () => {
+      startUnmutedPlayback()
+        .then(() => {
+          // Browser allowed unmuted autoplay!
+          if (videoStartPrompt) videoStartPrompt.style.display = 'none';
+          updateVideoAudioBtnUI();
+        })
+        .catch((err) => {
+          // Browser blocked unmuted autoplay!
+          console.log('Browser blocked unmuted autoplay. Holding for user initiation:', err);
+          
+          // DO NOT play muted! Pause and wait for user click/tap so it plays with 100% sound.
+          pipboyBootVideo.pause();
+          pipboyBootVideo.currentTime = 0;
+          pipboyBootVideo.muted = false;
+          pipboyBootVideo.volume = 1.0;
+          
+          if (videoStartPrompt) {
+            videoStartPrompt.style.display = 'block';
+          }
+
+          // Single global listener: clicking or pressing ANY key starts the video with audio
+          const userInitiatedPlay = (e) => {
+            if (e && (e.target === skipVideoBtn || (skipVideoBtn && skipVideoBtn.contains(e.target)))) {
+              return;
+            }
             if (videoStartPrompt) videoStartPrompt.style.display = 'none';
-            updateVideoAudioBtnUI();
-          })
-          .catch((err) => {
-            console.log('Unmuted autoplay prevented by browser policy, attempting muted fallback:', err);
-            // Second attempt: Muted playback with click-to-unmute prompt
-            pipboyBootVideo.muted = true;
-            pipboyBootVideo.play()
-              .then(() => {
-                updateVideoAudioBtnUI();
-                // Add one-time window listener to unmute on first click or touch
-                const unmuteOnInteraction = () => {
-                  pipboyBootVideo.muted = false;
-                  updateVideoAudioBtnUI();
-                  window.removeEventListener('click', unmuteOnInteraction);
-                  window.removeEventListener('touchstart', unmuteOnInteraction);
-                  window.removeEventListener('keydown', unmuteOnInteraction);
-                };
-                window.addEventListener('click', unmuteOnInteraction, { once: true });
-                window.addEventListener('touchstart', unmuteOnInteraction, { once: true });
-                window.addEventListener('keydown', unmuteOnInteraction, { once: true });
-              })
-              .catch((err2) => {
-                console.log('Autoplay fully restricted by browser:', err2);
-                // If both unmuted and muted autoplay are blocked by browser (e.g. strict Firefox):
-                if (videoStartPrompt) {
-                  videoStartPrompt.style.display = 'block';
-                } else {
-                  finishAllBootSequences();
-                }
-              });
-          });
-      }
+            pipboyBootVideo.muted = false;
+            pipboyBootVideo.volume = 1.0;
+            pipboyBootVideo.play().then(() => {
+              updateVideoAudioBtnUI();
+            }).catch(() => {});
+
+            window.removeEventListener('click', userInitiatedPlay);
+            window.removeEventListener('touchstart', userInitiatedPlay);
+            window.removeEventListener('keydown', userInitiatedPlay);
+          };
+
+          window.addEventListener('click', userInitiatedPlay, { once: true });
+          window.addEventListener('touchstart', userInitiatedPlay, { once: true });
+          window.addEventListener('keydown', userInitiatedPlay, { once: true });
+        });
     };
 
     // Trigger playback as soon as data or metadata is ready
